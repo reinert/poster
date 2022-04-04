@@ -1,0 +1,10 @@
+node_modules
+.env
+.data
+.logs
+.idea
+*~
+*.swp
+*.swo
+*.log
+.conf

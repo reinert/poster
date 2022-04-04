@@ -1,0 +1,19 @@
+{
+  "name": "posterr",
+  "version": "1.0.0",
+  "description": "Posterr",
+  "type": "module",
+  "main": "src/index.js",
+  "author": "Danilo Reinert",
+  "license": "MIT",
+  "dependencies": {
+    "fastify": "^3.27.4",
+    "pg": "^8.7.3"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^6.1.1"
+  },
+  "scripts": {
+    "postinstall": "nodemon ."
+  }
+}

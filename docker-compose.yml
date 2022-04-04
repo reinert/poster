@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    ports:
+      - "80:80"
+  pgsql:
+    image: postgres:alpine
+    tmpfs:
+      - /var/lib/postgresql:rw,noexec,nosuid,size=128m
+    volumes:
+#      - ./db/.data/postgresql:/var/lib/postgresql
+      - ./db/migrations:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $DB_PWD
+      POSTGRES_DB: $DB_DB
+    ports:
+      - "5432:5432"
+  server:
+    build:
+      context: server
+#      args:
+#        USER: $SV_USER
+#        USER_ID: $SV_USER_ID
+#        GROUP_ID: $SV_GROUP_ID
+    depends_on:
+      - pgsql
+      - nginx
+    volumes:
+      - ./server/src:/home/node/src
+      - ./server/node_modules:/home/node/node_modules
+      - ./server/.logs:/home/node/.logs
+      - ./server/yarn.lock:/home/node/yarn.lock
+      - ./server/package.json:/home/node/package.json
+      - ./server/wait-for-postgres.sh:/home/node/wait-for-postgres.sh
+    environment:
+      PGUSER: $DB_USER
+      PGPASSWORD: $DB_PWD
+      PGDATABASE: $DB_DB
+      PGHOST: pgsql
+#      LOG: .logs/server.log
+    expose:
+      - "3000"
+    command: ["./wait-for-postgres.sh", "pgsql", "--", "yarn", "--immutable", "install"]
+#    command: /bin/sh
+#    stdin_open: true
+#    tty: true
