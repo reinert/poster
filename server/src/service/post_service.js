@@ -45,4 +45,8 @@ export default class PostService extends BaseService {
     async getUserPostsByDate(user_id, date) {
         return this.repository.getPostsByUserAndDate(user_id, date)
     }
+
+    async searchPostsByContent(content) {
+        return this.repository.searchPostsByContent(content)
+    }
 }

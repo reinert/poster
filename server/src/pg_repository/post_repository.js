@@ -36,6 +36,12 @@ const GET_POSTS_BY_DATE =
  WHERE user_id = $1 AND datetime::date = $2::date
  ORDER BY datetime DESC`
 
+const SEARCH_POSTS_BY_CONTENT =
+    `SELECT id, kind, content, datetime, user_id, parent_post_id FROM posts
+ WHERE kind <> 'repost' AND content_ts @@ to_tsquery('english', $1)
+ ORDER BY datetime DESC
+ LIMIT $2 OFFSET $3`
+
 
 // ============================================================================
 // REPOSITORY
@@ -92,6 +98,14 @@ export default class PgPostRepository extends PgRepository(PostRepository) {
             name: 'GET_POSTS_BY_DATE',
             text: GET_POSTS_BY_DATE,
             values: [user_id, date]
+        })
+    }
+
+    async searchPostsByContent(content, limit = 10, offset = 0) {
+        return this.query({
+            name: 'SEARCH_POSTS_BY_CONTENT',
+            text: SEARCH_POSTS_BY_CONTENT,
+            values: [content, limit, offset]
         })
     }
 }

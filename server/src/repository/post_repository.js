@@ -23,4 +23,8 @@ export default class PostRepository {
     async getPostsByUserAndDate(user_id, date) {
         throw new Error('Not implemented yet.')
     }
+
+    async searchPostsByContent(content, limit = 10, offset = 0) {
+        throw new Error('Not implemented yet.')
+    }
 }

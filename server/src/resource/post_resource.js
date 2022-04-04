@@ -12,6 +12,9 @@ export default (service) => [
         method: 'GET',
         url: '/posts',
         handler: async (req) => {
+            if (req.query.q)
+                return service.searchPostsByContent(req.query.q, req.query.limit, req.query.offset)
+
             if (req.query.user_id)
                 return service.getUserPosts(req.query.user_id, req.query.limit, req.query.offset)
 
