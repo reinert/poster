@@ -18,6 +18,6 @@
     "postinstall": "yarn start",
     "prestart": "yarn test",
     "start": "nodemon .",
-    "test": "ava src/**/*_test.js"
+    "test": "node src/test/create_test_dbs.js && ava src/**/*_test.js && node src/test/drop_test_dbs.js"
   }
 }

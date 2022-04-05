@@ -16,7 +16,7 @@ before(test, TEST_DB, async t => {
     t.context.user = user
 })
 
-after(test, TEST_DB)
+after(test)
 
 test('addPostFailsWhenThereIsFivePostsInTheDay', async t => {
     const date = new Date();
