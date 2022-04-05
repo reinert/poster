@@ -1,8 +1,8 @@
 import test from 'ava'
 import base from '../test/test_base.js'
-import fake_data from "../test/fake_data.js";
-import PgPostRepository from "../pg_repository/post_repository.js";
-import PostService from "./post_service.js";
+import fake_data from "../test/fake_data.js"
+import PgPostRepository from "../pg_repository/post_repository.js"
+import PostService from "./post_service.js"
 
 const { before, after } = base
 
@@ -19,7 +19,7 @@ before(test, TEST_DB, async t => {
 after(test)
 
 test('addPostFailsWhenThereIsFivePostsInTheDay', async t => {
-    const date = new Date();
+    const date = new Date()
 
     for (let i = 0; i < 5; i++) {
         await generatePost(t.context.pool, t.context.user.id, PostKind.ORIGINAL, 'anything', date)

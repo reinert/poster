@@ -1,4 +1,4 @@
-import fake_data from "./fake_data.js";
+import fake_data from "./fake_data.js"
 
 const {
   generateUsers,

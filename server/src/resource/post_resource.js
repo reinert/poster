@@ -1,4 +1,4 @@
-import base from "./base_resource.js";
+import base from "./base_resource.js"
 
 export default (service) => [
     {

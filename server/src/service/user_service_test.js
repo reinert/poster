@@ -1,7 +1,7 @@
 import test from 'ava'
 import base from '../test/test_base.js'
-import PgUserRepository from "../pg_repository/user_repository.js";
-import UserService from "./user_service.js";
+import PgUserRepository from "../pg_repository/user_repository.js"
+import UserService from "./user_service.js"
 
 const { before, after } = base
 
