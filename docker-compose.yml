@@ -1,24 +1,22 @@
-version: '3.8'
+version: "3.5"
 services:
   nginx:
     image: nginx:alpine
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
     ports:
-      - "80:80"
+      - "8123:80"
   pgsql:
     image: postgres:alpine
     tmpfs:
       - /var/lib/postgresql:rw,noexec,nosuid,size=128m
     volumes:
-#      - ./db/.data/postgresql:/var/lib/postgresql
-      - ./db/migrations:/docker-entrypoint-initdb.d
+#      - ./pgsql/.data/postgresql:/var/lib/postgresql/data
+      - ./pgsql/migrations:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_USER: $DB_USER
       POSTGRES_PASSWORD: $DB_PWD
       POSTGRES_DB: $DB_DB
-    ports:
-      - "5432:5432"
   server:
     build:
       context: server

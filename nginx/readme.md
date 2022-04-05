@@ -1,7 +1,7 @@
 ## Setup local domains
 `sudo setup.sh`
 
-Add [server.,api.]posterr.local domains to /etc/hosts as loopbacks
+Add `posterr.local` domain to /etc/hosts as loopback
 
 ## Start nginx service
 It's included in docker-compose. At project's root run `docker-compose up`.
