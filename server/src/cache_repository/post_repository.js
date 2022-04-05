@@ -3,6 +3,13 @@ import CacheRepository from "./cache_repository.js"
 
 
 // ============================================================================
+// Thresholds
+// ============================================================================
+
+const POSTS_BY_FOLLOWER_THRESHOLD = 100
+
+
+// ============================================================================
 // TTLs (in seconds)
 // ============================================================================
 
@@ -38,13 +45,37 @@ const getPostsBySearchKey = (content) => `posts.search.${content}`
 
 export default class CachePostRepository extends CacheRepository(PostRepository) {
 
-    constructor(cache, repository) {
+    constructor(cache, repository, userRepository) {
         super(cache, repository)
+        this.userRepository = userRepository
     }
 
     async addPost(post) {
         // Delegate to the persistent repository
-        return this.repository.addPost(post)
+        const [ created ] = await this.repository.addPost(post)
+
+        if (created) {
+            // Update PostsByFollower cache if it exists
+            const [ author ] = await this.userRepository.getUser(created.user_id)
+            if (author.nr_followers <= POSTS_BY_FOLLOWER_THRESHOLD) {
+                // Only update the followers cache if the user has fewer followers than the threshold
+                const followers = await this.userRepository.getUsersByFollowee(created.user_id, author.nr_followers, 0)
+                for (const follower of followers) {
+                    const followerPosts = this.cache.get(getPostsByFollowerKey(follower.id))
+                    if (followerPosts) followerPosts.unshift(created)
+                }
+            }
+
+            // Update PostsByUser cache if it exists
+            const userPosts = this.cache.get(getPostsByUserKey(created.user_id))
+            if (userPosts) userPosts.unshift(created)
+
+            // Update PostsByUserAndDate cache if it exists
+            const userDatePosts = this.cache.get(getPostsByUserAndDateKey(created.user_id, created.datetime))
+            if (userDatePosts) userDatePosts.unshift(created)
+        }
+
+        return created
     }
 
     async getPost(post_id) {
