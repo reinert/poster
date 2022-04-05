@@ -1,6 +1,6 @@
 import pg from 'pg'
 import fastify_factory from 'fastify'
-import populate_db from './populate_db.js'
+import populate_db from './test/populate_db.js'
 
 import errors from "./errors.js"
 

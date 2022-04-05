@@ -1,6 +1,6 @@
 import test from 'ava'
-import base from '../test_base.js'
-import fake_data from "../fake_data.js";
+import base from '../test/test_base.js'
+import fake_data from "../test/fake_data.js";
 import PgPostRepository from "../pg_repository/post_repository.js";
 import PostService from "./post_service.js";
 
