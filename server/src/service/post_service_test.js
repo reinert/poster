@@ -39,3 +39,13 @@ test('addPostFailsWhenQuotingAnOwnPost', async t => {
 
     await t.throwsAsync(t.context.service.addPost(PostKind.QUOTE, 'anything', new Date(), t.context.user.id, post.id))
 })
+
+test('searchPostsSucceedsWithPartsOfContent', async t => {
+    const content = 'anything something'
+
+    const post = await generatePost(t.context.pool, t.context.user.id, PostKind.ORIGINAL, content, new Date())
+
+    const [ searched ] = await t.context.service.searchPostsByContent('something')
+
+    t.is(searched.id, post.id)
+})
