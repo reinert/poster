@@ -4,13 +4,15 @@ import populate_db from './test/populate_db.js'
 
 import errors from "./errors.js"
 
-import UserRepository from "./pg_repository/user_repository.js"
+import PgUserRepository from "./pg_repository/user_repository.js"
 import UserResource from "./resource/user_resource.js"
 import UserService from "./service/user_service.js"
 
-import PostRepository from "./pg_repository/post_repository.js"
+import CachePostRepository from "./cache_repository/post_repository.js"
+import PgPostRepository from "./pg_repository/post_repository.js"
 import PostResource from "./resource/post_resource.js"
 import PostService from "./service/post_service.js"
+import NodeCache from "node-cache"
 
 
 const { ValidationError } = errors
@@ -78,8 +80,18 @@ fastify.addHook('onClose', async (instance) => {
 // Resources
 // ============================================================================
 
-const userResource = UserResource(new UserService(new UserRepository(pool)))
-const postResource = PostResource(new PostService(new PostRepository(pool)))
+const cache = new NodeCache({
+  stdTTL: 60,
+  checkperiod: 600,
+  useClones: false,
+  deleteOnExpire: true
+})
+
+const pgUserRepository = new PgUserRepository(pool)
+const pgPostRepository = new PgPostRepository(pool)
+
+const userResource = UserResource(new UserService(pgUserRepository))
+const postResource = PostResource(new PostService(new CachePostRepository(cache, pgPostRepository, pgUserRepository)))
 
 for (const route of userResource) fastify.route(route)
 for (const route of postResource) fastify.route(route)
