@@ -12,16 +12,13 @@ export default class PostService extends BaseService {
     }
 
     async addPost(post) {
-        const datePosts = await this.repository.getPostsByUserAndDate(post.user_id, post.datetime)
+        // Check if the user 5 posts in the day
+        await this.checkExceededDailyLimit(post)
 
-        if (datePosts.length > 5)
-            throw new ValidationError('The user has already posted 5 times this day.')
+        // Check if the user is trying to repost/quote an own post
+        await this.checkReferencingOwnPost(post)
 
-        if (post.parent_post_id) {
-            const parentPost = await this.repository.getPost(post.parent_post_id)
-            if (parentPost.length && parentPost[0].user_id === `${post.user_id}`)
-                throw new ValidationError('Cannot reference to an own post.')
-        }
+        // other checks are being done in database level, though they should be done in app level as well
 
         return this.repository.addPost(post)
     }
@@ -48,5 +45,24 @@ export default class PostService extends BaseService {
 
     async searchPostsByContent(content) {
         return this.repository.searchPostsByContent(content)
+    }
+
+    // --------------------------------
+    // Validations
+    // --------------------------------
+
+    async checkExceededDailyLimit(post) {
+        const datePosts = await this.repository.getPostsByUserAndDate(post.user_id, post.datetime)
+
+        if (datePosts.length > 5)
+            throw new ValidationError('The user has already posted 5 times this day.')
+    }
+
+    async checkReferencingOwnPost(post) {
+        if (post.parent_post_id) {
+            const parentPost = await this.repository.getPost(post.parent_post_id)
+            if (parentPost.length && parentPost[0].user_id === `${post.user_id}`)
+                throw new ValidationError('Cannot reference to an own post.')
+        }
     }
 }
