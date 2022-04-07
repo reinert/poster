@@ -38,3 +38,22 @@ CREATE INDEX posts_user_datetime_idx ON posts (user_id, datetime);
 
 -- Index to retrieve the posts in response to another post in chronological order
 CREATE INDEX posts_parent_datetime_idx ON posts (parent_post_id, datetime);
+
+-- Trigger to increment nr_posts on users when a new post is created
+CREATE OR REPLACE FUNCTION inc_posts()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+UPDATE users SET nr_posts = nr_posts + 1 WHERE id = NEW.user_id;
+
+RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER inc_posts_trigger
+    AFTER INSERT
+    ON posts
+    FOR EACH ROW
+    EXECUTE PROCEDURE inc_posts();

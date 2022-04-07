@@ -7,6 +7,7 @@ CREATE TABLE users
   -- Computed columns that will be updated according to new follows/unfollows
   nr_followers int NOT NULL DEFAULT 0,
   nr_following int NOT NULL DEFAULT 0,
+  nr_posts int NOT NULL DEFAULT 0,
 
   -- Check username is alphanumeric
   CONSTRAINT users_username_ck CHECK (username ~ '^[[:alnum:]]+$'),
