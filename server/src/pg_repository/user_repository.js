@@ -1,5 +1,7 @@
 import UserRepository from "../repository/user_repository.js"
-import PgRepository from "./pg_repository.js"
+import pg_repository from "./pg_repository.js"
+
+const { PgRepository, format_query } = pg_repository
 
 
 // ============================================================================
@@ -40,6 +42,8 @@ const GET_USERS_BY_FOLLOWER =
 // REPOSITORY
 // ============================================================================
 
+const _ = format_query
+
 export default class PgUserRepository extends PgRepository(UserRepository) {
 
     constructor(pool) {
@@ -47,58 +51,58 @@ export default class PgUserRepository extends PgRepository(UserRepository) {
     }
 
     async addUser({ username }) {
-        return this.query({
-            name: 'ADD_USER',
-            text: ADD_USER,
-            values: [username]
-        })
+        return this.query(_({
+            ADD_USER,
+            username
+        }))
     }
 
     async addFollow(follower_id, followee_id) {
-        return this.query({
-            name: 'ADD_FOLLOW',
-            text: ADD_FOLLOW,
-            values: [follower_id, followee_id]
-        })
+        return this.query(_({
+            ADD_FOLLOW,
+            follower_id,
+            followee_id
+        }))
     }
 
     async delFollow(follower_id, followee_id) {
-        return this.query({
-            name: 'DEL_FOLLOW',
-            text: DEL_FOLLOW,
-            values: [follower_id, followee_id]
-        })
+        return this.query(_({
+            DEL_FOLLOW,
+            follower_id,
+            followee_id
+        }))
     }
 
     async hasFollow(follower_id, followee_id) {
-        return this.query({
-            name: 'HAS_FOLLOW',
-            text: HAS_FOLLOW,
-            values: [follower_id, followee_id]
-        })
+        return this.query(_({
+            HAS_FOLLOW,
+            follower_id,
+            followee_id
+        }))
     }
 
     async getUser(user_id) {
-        return this.query({
-            name: 'GET_USER',
-            text: GET_USER,
-            values: [user_id]
-        })
+        return this.query(_({
+            GET_USER,
+            user_id
+        }))
     }
 
     async getUsersByFollowee(followee_id, limit = 10, offset = 0) {
-        return this.query({
-            name: 'GET_USERS_BY_FOLLOWEE',
-            text: GET_USERS_BY_FOLLOWEE,
-            values: [followee_id, limit, offset]
-        })
+        return this.query(_({
+            GET_USERS_BY_FOLLOWEE,
+            followee_id,
+            limit,
+            offset
+        }))
     }
 
     async getUsersByFollower(follower_id, limit = 10, offset = 0) {
-        return this.query({
-            name: 'GET_USERS_BY_FOLLOWER',
-            text: GET_USERS_BY_FOLLOWER,
-            values: [follower_id, limit, offset]
-        })
+        return this.query(_({
+            GET_USERS_BY_FOLLOWER,
+            follower_id,
+            limit,
+            offset
+        }))
     }
 }

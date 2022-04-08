@@ -38,4 +38,17 @@ const PgRepository = (Repository) => class extends Repository {
     }
 }
 
-export default PgRepository
+const format_query = (args) => {
+    const keys = Object.keys(args)
+    const values = Object.values(args)
+    return {
+        name: keys[0],
+        text: values.shift(),
+        values: values
+    }
+}
+
+export default {
+    PgRepository,
+    format_query
+}

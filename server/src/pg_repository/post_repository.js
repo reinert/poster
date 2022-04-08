@@ -1,6 +1,7 @@
 import PostRepository from "../repository/post_repository.js"
-import PgRepository from "./pg_repository.js"
+import pg_repository from "./pg_repository.js"
 
+const { PgRepository, format_query } = pg_repository
 
 // ============================================================================
 // QUERIES
@@ -47,6 +48,8 @@ const SEARCH_POSTS_BY_CONTENT =
 // REPOSITORY
 // ============================================================================
 
+const _ = format_query
+
 export default class PgPostRepository extends PgRepository(PostRepository) {
 
     constructor(pool) {
@@ -54,58 +57,63 @@ export default class PgPostRepository extends PgRepository(PostRepository) {
     }
 
     async addPost({ kind, content, datetime, user_id, parent_post_id }) {
-        return this.query({
-            name: 'ADD_POST',
-            text: ADD_POST,
-            values: [kind, content, datetime, user_id, parent_post_id]
-        })
+        return this.query(_({
+            ADD_POST,
+            kind,
+            content,
+            datetime,
+            user_id,
+            parent_post_id
+        }))
     }
 
     async getPost(post_id) {
-        return this.query({
-            name: 'GET_POST',
-            text: GET_POST,
-            values: [post_id]
-        })
+        return this.query(_({
+            GET_POST,
+            post_id
+        }))
     }
 
     async getPosts(limit = 10, offset = 0) {
-        return this.query({
-            name: 'GET_POSTS',
-            text: GET_POSTS,
-            values: [limit, offset]
-        })
+        return this.query(_({
+            GET_POSTS,
+            limit,
+            offset
+        }))
     }
 
     async getPostsByFollower(follower_id, limit = 10, offset = 0) {
-        return this.query({
-            name: 'GET_POSTS_BY_FOLLOWER',
-            text: GET_POSTS_BY_FOLLOWER,
-            values: [follower_id, limit, offset]
-        })
+        return this.query(_({
+            GET_POSTS_BY_FOLLOWER,
+            follower_id,
+            limit,
+            offset
+        }))
     }
 
     async getPostsByUser(user_id, limit = 10, offset = 0) {
-        return this.query({
-            name: 'GET_POSTS_BY_USER',
-            text: GET_POSTS_BY_USER,
-            values: [user_id, limit, offset]
-        })
+        return this.query(_({
+            GET_POSTS_BY_USER,
+            user_id,
+            limit,
+            offset
+        }))
     }
 
     async getPostsByUserAndDate(user_id, date) {
-        return this.query({
-            name: 'GET_POSTS_BY_DATE',
-            text: GET_POSTS_BY_DATE,
-            values: [user_id, date]
-        })
+        return this.query(_({
+            GET_POSTS_BY_DATE,
+            user_id,
+            date
+        }))
     }
 
     async searchPostsByContent(content, limit = 10, offset = 0) {
-        return this.query({
-            name: 'SEARCH_POSTS_BY_CONTENT',
-            text: SEARCH_POSTS_BY_CONTENT,
-            values: [content, limit, offset]
-        })
+        return this.query(_({
+            SEARCH_POSTS_BY_CONTENT,
+            content,
+            limit,
+            offset
+        }))
     }
 }
