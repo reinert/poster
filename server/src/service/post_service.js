@@ -5,6 +5,9 @@ import BaseService from "./base_service.js"
 const { ValidationError } = errors
 
 
+const MAX_POSTS_BY_DAY = 5
+
+
 export default class PostService extends BaseService {
 
     constructor(repository) {
@@ -54,8 +57,8 @@ export default class PostService extends BaseService {
     async checkExceededDailyLimit(post) {
         const datePosts = await this.repository.getPostsByUserAndDate(post.user_id, post.datetime)
 
-        if (datePosts.length > 5)
-            throw new ValidationError('The user has already posted 5 times this day.')
+        if (datePosts.length > MAX_POSTS_BY_DAY)
+            throw new ValidationError(`The user has already posted ${MAX_POSTS_BY_DAY} times this day.`)
     }
 
     async checkReferencingOwnPost(post) {
