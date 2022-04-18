@@ -12,10 +12,10 @@ const ADD_USER =
     `INSERT INTO users (username) VALUES ($1) RETURNING id, username, join_date, nr_followers, nr_following, nr_posts`
 
 const ADD_FOLLOW =
-    `INSERT INTO follows (follower_id, followee_id) VALUES ($1, $2) RETURNING follower_id, followee_id, nr_posts`
+    `INSERT INTO follows (follower_id, followee_id) VALUES ($1, $2) RETURNING follower_id, followee_id, datetime`
 
 const DEL_FOLLOW =
-    `DELETE FROM follows WHERE follower_id = $1 AND followee_id = $2 RETURNING follower_id, followee_id, nr_posts`
+    `DELETE FROM follows WHERE follower_id = $1 AND followee_id = $2 RETURNING follower_id, followee_id, datetime`
 
 const GET_USER =
     `SELECT * from users WHERE id = $1`
