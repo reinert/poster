@@ -6,6 +6,8 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d
     ports:
       - "8123:80"
+    depends_on:
+      - server
   pgsql:
     image: postgres:alpine
     tmpfs:
@@ -26,7 +28,6 @@ services:
 #        GROUP_ID: $SV_GROUP_ID
     depends_on:
       - pgsql
-      - nginx
     volumes:
       - ./server/src:/home/node/src
       - ./server/node_modules:/home/node/node_modules
